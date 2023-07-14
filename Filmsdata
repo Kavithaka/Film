@@ -1,0 +1,80 @@
+create database movie
+use movie
+create table artist(Art_id int,Art_name varchar(255),Art_gender varchar(255))
+insert into artist values(101,"Abi",'Male')
+insert into artist values(123,"kavitha",'Male')
+insert into artist values(134,"Sreya",'Female')
+insert into artist values(143,"sujitha",'Female')
+select * from artist
+create table producer(Prod_id int,Prod_Name varchar(255),Prod_phone bigint)
+insert into producer values(101,"Aditya","6789043678")
+insert into producer values(123,"Faran","9878904345")
+insert into producer values(134,"Harish","9788562759")
+insert into producer values(143,"Niraj","8667674543")
+select * from producer
+select Prod_id
+from producer
+where Prod_Name = 'Niraj'
+create table films1(Film_id int,Film_title varchar(255),Film_year int,Film_lang varchar(255),prod_id int)
+insert into films1 values(200,"Nenjam Marappathillai",2023,"Tamil",101)
+insert into films1 values(209,"War2",2017,"English",123)
+insert into films1 values(200,"The May",2019,"English",134)
+insert into films1 values(208,"Bhanumati",2014,"Telugu",143)
+select * from films1
+// year between ,not//
+select * from films1
+where Film_year between 2016 and 2018
+select* from films1
+where Film_year not between 2016 and 2018
+create table casting(Art_id int,Film_id int,Part Text)
+insert into casting values(109,11,"Actor")
+insert into casting values(200,12,"Heroine")
+insert into casting values(201,13,"Actor")
+insert into casting values(206,11,"Heroine")
+insert into casting values(205,16,"Guest")
+select * from casting
+create table review(Film_id int,Stars int)
+insert into review values(10,4)
+insert into review values(11,3)
+insert into review  values(12,2)
+insert into review values(15,5)
+select * from review
+//update the  stars//
+update review set Stars=5 where Film_id in(select Film_id from films1 where prod_id in(select prod_id from producer where prod_name="Harish"))
+//Releasing year//
+select Film_title from films1
+where Film_year="2023";
+//joins//
+select * from films1
+left join casting
+on films1.Film_id=casting.Art_id
+select * from casting
+right join films1
+on films1.Film_id=casting.Art_id
+select * from films1
+left join casting 
+on films1.Film_id=casting.Art_id
+union all
+select * from casting
+right join films1 on films1.Film_id=casting.Art_id
+//star received//
+select * from review
+order by Stars desc
+//find the name of all films whose producer Niraj//
+select Film_title from films1
+  where Prod_id in (select Prod_id from producer
+  where Prod_Name="Niraj")
+  //film year
+select Film_title from films1 where Film_id in (select Film_id from films1 where Film_year between 2016 and 2018)
+// trigger//
+create trigger Starsdeducts
+after insert
+on review
+for each row
+update Stars_det set Stars=Stars - 1 where Stars=new.Stars;
+//views//
+create view casting1 as
+select Art_id,part
+from casting
+where part='Guest';
+select * from casting1
